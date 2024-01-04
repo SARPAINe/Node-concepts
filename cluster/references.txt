@@ -1,0 +1,4 @@
+1. https://www.digitalocean.com/community/tutorials/how-to-scale-node-js-applications-with-clustering
+2. https://nodejs.org/api/cluster.html
+3. https://www.npmjs.com/package/loadtest
+4. https://www.digitalocean.com/community/tutorials/how-to-use-multithreading-in-node-js
