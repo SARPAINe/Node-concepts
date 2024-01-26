@@ -76,7 +76,7 @@
 // time: 700ms
 // better memoyr usage
 const fs = require("node:fs/promises");
-const { exit } = require("node:process");
+const numberOfWrites = 1000000000;
 
 (async () => {
     console.time("writeMany");
@@ -109,10 +109,11 @@ const { exit } = require("node:process");
         drainCount = 0;
 
     const writeMany = () => {
-        while (i < 1000000) {
-            const buff = Buffer.from(`index ${i}\n`, "utf-8");
+        while (i < numberOfWrites) {
+            // const buff = Buffer.from(`index ${i}\n`, "utf-8");
+            const buff = Buffer.from(`${i} `, "utf-8");
 
-            if (i === 999999) {
+            if (i === numberOfWrites - 1) {
                 return stream.end(buff);
             }
 
