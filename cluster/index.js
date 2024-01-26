@@ -1,27 +1,25 @@
 import express from "express";
+import { randomUUID } from "node:crypto";
+import fs from "node:fs";
 
 const port = 3000;
 const app = express();
 
 console.log(`worker pid=${process.pid}`);
 
-app.get("/heavy-time", (req, res) => {
-    setTimeout(() => {
-        let total = 0;
-        for (let i = 0; i < 5_000_000; i++) {
-            total++;
+app.get("/heavy", (req, res) => {
+    fs.open("text_million.txt", "w", (err, fd) => {
+        for (let i = 0; i < 2000000; i++) {
+            const buf = Buffer.from(`index ${i}\n`);
+            fs.writeSync(fd, buf);
         }
-        console.log("working");
-        res.send(`The result of the CPU intensive task is ${total}\n`);
-    }, 5000);
+        res.send("done");
+    });
 });
 
-app.get("/heavy", (req, res) => {
-    let total = 0;
-    for (let i = 0; i < 5_000_000; i++) {
-        total++;
-    }
-    res.send(`The result of the CPU intensive task is ${total}\n`);
+app.get("/small", (req, res) => {
+    let total = randomUUID();
+    res.send(`The result is ${total}\n`);
 });
 
 app.get("/crash", (req, res) => {
