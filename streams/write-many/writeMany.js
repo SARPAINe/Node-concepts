@@ -76,7 +76,11 @@
 // time: 700ms
 // better memoyr usage
 const fs = require("node:fs/promises");
-const numberOfWrites = 1000000000;
+
+// 1 billion
+// const numberOfWrites = 1000000000;
+// 100 million
+const numberOfWrites = 100000000;
 
 (async () => {
     console.time("writeMany");

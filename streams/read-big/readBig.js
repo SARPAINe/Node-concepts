@@ -5,26 +5,31 @@ let totalChunks = 0;
     const fileHandleRead = await fs.open("src.txt", "r");
     const fileHandleWrite = await fs.open("dest.txt", "w");
 
-    // const streamRead = fileHandleRead.createReadStream({ highWaterMark: 400 });
+    // const streamRead = fileHandleRead.createReadStream({ highWaterMark: 400 });\
     const streamRead = fileHandleRead.createReadStream();
     const streamWrite = fileHandleWrite.createWriteStream();
 
+    // const chunkSize = streamRead.readableHighWaterMark;
+
     const stats = await fs.stat("src.txt");
     const totalBytes = stats.size;
+    let bytesCompleted = 0;
 
-    const onePercent = Math.ceil(totalBytes / 100);
-    console.log(onePercent);
+    let onePercent = Math.ceil(totalBytes / 100);
 
     // console.log(streamRead.readableHighWaterMark);
 
     streamRead.on("data", (chunk) => {
-        totalChunks++;
-        // if (totalChunks % 100 === 0) {
-        //     console.log(`${totalChunks}`);
-        // }
-        if (totalChunks % onePercent === 0) {
-            console.log(`${(totalChunks / onePercent).toFixed(2)}% done`);
+        bytesCompleted += chunk.length;
+
+        if (bytesCompleted >= onePercent) {
+            console.log(
+                // `${((bytesCompleted / totalBytes) * 100).toFixed(2)}% done`
+                `${Math.floor((bytesCompleted / totalBytes) * 100)}% done`
+            );
+            onePercent += Math.ceil(totalBytes / 100); // Increment to the next threshold
         }
+
         if (!streamWrite.write(chunk)) {
             streamRead.pause();
         }
