@@ -80,14 +80,18 @@ const fs = require("node:fs/promises");
 // 1 billion
 // const numberOfWrites = 1000000000;
 // 100 million
-const numberOfWrites = 100000000;
+// const numberOfWrites = 100000000;
+// 1 million
+const numberOfWrites = 1000000;
 
 (async () => {
     console.time("writeMany");
 
     const fileHandler = await fs.open("text_million.txt", "w");
 
-    const stream = fileHandler.createWriteStream();
+    const stream = fileHandler.createWriteStream({
+        highWaterMark: 1024 * 1024,
+    });
 
     // console.log(stream.writableHighWaterMark); // size of our internal buffer
     // console.log(stream.writableLength); // indicates how much of our buffer is full

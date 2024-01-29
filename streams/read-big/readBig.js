@@ -1,4 +1,3 @@
-const { count } = require("node:console");
 const fs = require("node:fs/promises");
 let totalChunks = 0;
 (async () => {
