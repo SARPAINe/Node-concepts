@@ -2,6 +2,7 @@ const { scrypt, createCipheriv, createDecipheriv } = require("crypto");
 
 const algorithm = "aes-192-cbc";
 const password = "d6F3Efeqd6F3Efeqd6F3Efeq";
+const fs = require("node:fs/promises");
 
 const encrypt = async (data) => {
     return new Promise((resolve, reject) => {
@@ -13,10 +14,10 @@ const encrypt = async (data) => {
 
             const cipher = createCipheriv(algorithm, key, iv);
 
-            // let encrypted = cipher.update(data, "utf-8", "hex");
-            let encrypted = cipher.update(data, "utf-8", "ascii");
-            // encrypted += cipher.final("hex");
-            encrypted += cipher.final("ascii");
+            let encrypted = cipher.update(data, "utf-8", "hex");
+            // let encrypted = cipher.update(data, "utf-8", "ascii");
+            encrypted += cipher.final("hex");
+            // encrypted += cipher.final("ascii");
 
             resolve(encrypted);
         });
@@ -33,9 +34,8 @@ const decrypt = async (encryptedData) => {
 
             const decipher = createDecipheriv(algorithm, key, iv);
 
-            // let decrypted = decipher.update(encryptedData, "hex", "utf8");
-            let decrypted = decipher.update(encryptedData, "ascii", "utf-8");
-            // decrypted += decipher.final("utf8");
+            let decrypted = decipher.update(encryptedData, "hex", "utf8");
+            // let decrypted = decipher.update(encryptedData, "ascii", "utf-8");
             decrypted += decipher.final("utf-8");
 
             resolve(decrypted);
@@ -46,7 +46,11 @@ const decrypt = async (encryptedData) => {
 if (require.main === module) {
     (async () => {
         try {
-            let encrypted = await encrypt(Buffer.from("fools"));
+            const buf = await fs.readFile("read2.txt", { flag: "r" });
+            // const readHandler = await fs.open("text_million.txt", "r");
+            // const buf = readHandler.createReadStream();
+            // console.log(buf.toString());
+            let encrypted = await encrypt(buf);
             console.log(`Encrypted value: ${encrypted}`);
             let decrypted = await decrypt(encrypted);
             console.log(`Decrypted value: ${decrypted}`);
