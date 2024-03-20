@@ -6,7 +6,7 @@
 //     console.time("writeMany");
 //     const fileHandler = await fs.open("text_million.txt", "w");
 
-//     for (let i = 0; i < 1000000; i++) {
+//     for (let i = 0; i < 2000000; i++) {
 //         await fileHandler.write(`index ${i}\n`);
 //     }
 //     await fileHandler.close();
@@ -55,7 +55,7 @@
 // })();
 
 // time: 400ms
-//takes too much memory
+// takes too much memory
 
 // const fs = require("node:fs/promises");
 
@@ -74,7 +74,7 @@
 // })();
 
 // time: 700ms
-// better memoyr usage
+// better memory usage
 const fs = require("node:fs/promises");
 
 // 1 billion
