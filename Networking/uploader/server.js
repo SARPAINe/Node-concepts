@@ -3,40 +3,43 @@ const fs = require("node:fs/promises");
 
 const server = net.createServer(() => {});
 
-let fileHandle, fileWriteStream;
-
 server.on("connection", (socket) => {
-    console.log("New connection!");
+  let fileHandle, fileWriteStream;
+  console.log("New connection!");
 
-    socket.on("data", async (data) => {
-        if (!fileHandle) {
-            socket.pause(); // pause receiving data from the client
-            fileHandle = await fs.open(`storage/test.txt`, "w");
-            fileWriteStream = fileHandle.createWriteStream(); // the stream to write to
+  socket.on("data", async (data) => {
+    if (!fileHandle) {
+      socket.pause(); // pause receiving data from the client
 
-            // Writing to our destination file, discard the headers
-            fileWriteStream.write(data);
+      const indexOfDivider = data.indexOf("-------");
+      const fileName = data.subarray(10, indexOfDivider).toString("utf-8");
 
-            socket.resume(); // resume receiving data from the client
-            fileWriteStream.on("drain", () => {
-                socket.resume();
-            });
-        } else {
-            if (!fileWriteStream.write(data)) {
-                socket.pause();
-            }
-        }
-    });
+      fileHandle = await fs.open(`storage/${fileName}`, "w");
+      fileWriteStream = fileHandle.createWriteStream(); // the stream to write to
 
-    // This end event happens when the client.js file ends the socket
-    socket.on("end", () => {
-        fileHandle.close();
-        fileHandle = undefined;
-        fileWriteStream = undefined;
-        console.log("Connection ended!");
-    });
+      // Writing to our destination file, discard the headers
+      fileWriteStream.write(data.subarray(indexOfDivider + 7)); //it still works even if i don't write inside if block
+
+      socket.resume(); // resume receiving data from the client
+      fileWriteStream.on("drain", () => {
+        socket.resume();
+      });
+    } else {
+      if (!fileWriteStream.write(data)) {
+        socket.pause();
+      }
+    }
+  });
+
+  // This end event happens when the client.js file ends the socket
+  socket.on("end", () => {
+    fileHandle.close();
+    fileHandle = undefined;
+    fileWriteStream = undefined;
+    console.log("Connection ended!");
+  });
 });
 
 server.listen(5050, "::1", () => {
-    console.log("Uploader server opened on", server.address());
+  console.log("Uploader server opened on", server.address());
 });
