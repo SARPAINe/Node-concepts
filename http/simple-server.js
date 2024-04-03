@@ -14,8 +14,27 @@ server.on("request", (request, response) => {
 
     console.log("--------- BODY: ---------");
 
+    const name = request.headers.name;
+
+    let data = "";
+
     request.on("data", (chunk) => {
-        console.log(chunk.toString("utf-8"));
+        data += chunk.toString("utf-8");
+    });
+
+    request.on("end", () => {
+        data = JSON.parse(data);
+        console.log(data);
+        console.log(name);
+
+        response.writeHead(200, {
+            "Content-Type": "application/json",
+        });
+        response.end(
+            JSON.stringify({
+                message: `Post with title ${data.title} was created by ${name}`,
+            })
+        );
     });
 });
 
