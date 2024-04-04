@@ -25,7 +25,7 @@ server.on("request", (request, response) => {
     request.on("end", () => {
         data = JSON.parse(data);
         console.log(data);
-        console.log(name);
+        console.log(data.title);
 
         response.writeHead(200, {
             "Content-Type": "application/json",
