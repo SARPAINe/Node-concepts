@@ -16,6 +16,26 @@ class Blush {
         res.setHeader("Content-Type", mime);
         fileStream.pipe(res);
       };
+
+      //Set the status code of the response
+      res.status = (code) => {
+        res.statusCode = code;
+        return res;
+      };
+
+      //send a json data back to the client (for small json data, less than the highWaterMark)
+      res.json = (data) => {
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(data));
+      };
+
+      // if the routes object does not have a key of req.method+req.url, return 404
+      if (!this.routes[req.method.toLowerCase() + req.url]) {
+        return res
+          .status(404)
+          .json({ error: `Cannot ${req.method} ${req.url}` });
+      }
+
       this.routes[req.method.toLowerCase() + req.url](req, res);
     });
   }
