@@ -1,4 +1,4 @@
-const Blush = require("./blush");
+const Blush = require("../blush");
 
 const PORT = 4060;
 
