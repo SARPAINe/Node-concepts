@@ -20,6 +20,17 @@ server.route("post", "/login", (req, res) => {
   res.status(400).json({ message: "Bad login info." });
 });
 
+server.beforeEach((req, res, next) => {
+  console.log("Middleware 1");
+  console.log("body", req);
+  next();
+});
+
+server.beforeEach((req, res, next) => {
+  console.log("Middleware 2");
+  next();
+});
+
 server.listen(PORT, () => {
   console.log(`Server has started on port http://localhost:${PORT}`);
 });
